@@ -5,7 +5,7 @@ import zlib
 def radToDeg (val):
     return (val * 180) / math.pi
 
-def parseNumber (val):
+def parseNumber (val): # converts number to string, and removes trailing zeros
     text = str(round(val, 2))
     if text[len(text) - 1] == '0':
         text = text[0: len(text) - 1]
@@ -23,7 +23,7 @@ for obj in bpy.data.objects:
     #        print(prop + ":")
     #        print(getattr(slot, prop, "undefined"))
     
-    # work out which group this belongs to
+    # work out which group this belongs to based on its material
     group = 'general'
     groupIndex = 0
     if obj.material_slots:
@@ -34,7 +34,7 @@ for obj in bpy.data.objects:
         # create a new group
         groupIndex = len(groupNames)
         groupNames.append(group)
-        newText = '\r\n<a-entity mixin="#' + group + '"'
+        newText = '\r\n<a-entity material="color: ' + parseNumber(obj.material_slots[0].material.diffuse_color[0]) + ' ' + parseNumber(obj.material_slots[0].material.diffuse_color[1]) + ' ' + parseNumber(obj.material_slots[0].material.diffuse_color[2]) + '"'
         if group != 'general':
             newText += ' merge'
         newText += '>'
@@ -60,7 +60,7 @@ for obj in bpy.data.objects:
         groupData[groupIndex] += ' rotation="' + parseNumber(radToDeg(obj.rotation_euler.x)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.z)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.y)) + '"'
     
     for customProp in obj.keys():
-        if customProp != '_RNA_UI':
+        if customProp != '_RNA_UI' and customProp != 'cycles':
             groupData[groupIndex] += ' ' + customProp + '="' + str(obj[customProp]) + '"'
     
     groupData[groupIndex] += '></a-entity>'
