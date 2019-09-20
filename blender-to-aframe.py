@@ -35,6 +35,12 @@ for obj in bpy.data.objects:
         groupIndex = len(groupNames)
         groupNames.append(group)
         newText = '\r\n<a-entity material="color: ' + parseNumber(obj.material_slots[0].material.diffuse_color[0]) + ' ' + parseNumber(obj.material_slots[0].material.diffuse_color[1]) + ' ' + parseNumber(obj.material_slots[0].material.diffuse_color[2]) + '"'
+        
+        # custom properties on the material:
+        for customProp in obj.material_slots[0].material.keys():
+            if customProp != '_RNA_UI':
+                newText += ' ' + customProp + '="' + str(obj.material_slots[0].material[customProp]) + '"'
+        
         if group != 'general':
             newText += ' merge'
         newText += '>'
@@ -59,6 +65,7 @@ for obj in bpy.data.objects:
     if obj.rotation_euler.x != 0 or obj.rotation_euler.y != 0 or obj.rotation_euler.z != 0:
         groupData[groupIndex] += ' rotation="' + parseNumber(radToDeg(obj.rotation_euler.x)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.z)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.y)) + '"'
     
+    # custom properties on the object:
     for customProp in obj.keys():
         if customProp != '_RNA_UI' and customProp != 'cycles':
             groupData[groupIndex] += ' ' + customProp + '="' + str(obj[customProp]) + '"'
