@@ -17,11 +17,6 @@ groupNames = ['general']
 groupData = ['']
 
 for obj in bpy.data.objects:
-
-    #for slot in obj.material_slots:
-    #    for prop in dir(slot):
-    #        print(prop + ":")
-    #        print(getattr(slot, prop, "undefined"))
     
     # work out which group this belongs to based on its material
     group = 'general'
@@ -56,6 +51,12 @@ for obj in bpy.data.objects:
         groupData[groupIndex] += ' geometry="primitive: box"'
     elif 'Plane' in obj.name:
         groupData[groupIndex]+= ' geometry="primitive: plane"'
+    elif 'Cone' in obj.name:        
+        if 'radiusBottom' not in obj.keys():
+            obj['radiusBottom'] = 1
+        if 'radiusTop' not in obj.keys():
+            obj['radiusTop'] = 0
+        groupData[groupIndex]+= ' geometry="primitive: cone; segmentsHeight: 1; segmentsRadial: ' + str(len(obj.data.polygons) - 2) + '; radiusBottom: ' + str(obj['radiusBottom']) + '; radiusTop: ' + str(obj['radiusTop']) + '"'
     elif 'Cylinder' in obj.name:
         groupData[groupIndex] += ' geometry="primitive: cylinder; segmentsHeight: 1; segmentsRadial: ' + str(len(obj.data.polygons) - 2) + '"'
     if obj.scale.x != 0.5 or obj.scale.y != 0.5 or obj.scale.z != 0.5: # as primitives are 2m by default in blender, scales are doubled    
@@ -66,8 +67,9 @@ for obj in bpy.data.objects:
         groupData[groupIndex] += ' rotation="' + parseNumber(radToDeg(obj.rotation_euler.x)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.z)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.y)) + '"'
     
     # custom properties on the object:
+    unwantedKeys = ['_RNA_UI', 'cycles', 'radiusBottom', 'radiusTop']
     for customProp in obj.keys():
-        if customProp != '_RNA_UI' and customProp != 'cycles':
+        if customProp not in unwantedKeys:
             groupData[groupIndex] += ' ' + customProp + '="' + str(obj[customProp]) + '"'
     
     groupData[groupIndex] += '></a-entity>'
