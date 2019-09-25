@@ -48,17 +48,24 @@ for obj in bpy.data.objects:
         groupData[groupIndex] += '\t' #tab
     groupData[groupIndex] += '<a-entity'
     if 'Cube' in obj.name:
-        groupData[groupIndex] += ' geometry="primitive: box"'
+        groupData[groupIndex] += ' geometry="primitive: box'
     elif 'Plane' in obj.name:
-        groupData[groupIndex]+= ' geometry="primitive: plane"'
+        groupData[groupIndex] += ' geometry="primitive: plane'
     elif 'Cone' in obj.name:        
         if 'radiusBottom' not in obj.keys():
             obj['radiusBottom'] = 1
         if 'radiusTop' not in obj.keys():
             obj['radiusTop'] = 0
-        groupData[groupIndex]+= ' geometry="primitive: cone; segmentsHeight: 1; segmentsRadial: ' + str(len(obj.data.polygons) - 2) + '; radiusBottom: ' + str(obj['radiusBottom']) + '; radiusTop: ' + str(obj['radiusTop']) + '"'
+        groupData[groupIndex] += ' geometry="primitive: cone; segmentsHeight: 1; segmentsRadial: ' + str(len(obj.data.polygons) - 2) + '; radiusBottom: ' + str(obj['radiusBottom']) + '; radiusTop: ' + str(obj['radiusTop'])
     elif 'Cylinder' in obj.name:
-        groupData[groupIndex] += ' geometry="primitive: cylinder; segmentsHeight: 1; segmentsRadial: ' + str(len(obj.data.polygons) - 2) + '"'
+        groupData[groupIndex] += ' geometry="primitive: cylinder; segmentsHeight: 1; segmentsRadial: ' + str(len(obj.data.polygons) - 2)
+    
+    # need to set buffer to false for merged geometries
+    if group == 'general':
+        groupData[groupIndex] += '"'
+    else:
+        groupData[groupIndex] += '; buffer: false"'
+    
     if obj.scale.x != 0.5 or obj.scale.y != 0.5 or obj.scale.z != 0.5: # as primitives are 2m by default in blender, scales are doubled    
         groupData[groupIndex] += ' scale="' + parseNumber(obj.scale.x * 2) + ' ' + parseNumber(obj.scale.z * 2) + ' ' + parseNumber(obj.scale.y * 2) + '"'
     if obj.location.x != 0 or obj.location.y != 0 or obj.location.z != 0:
