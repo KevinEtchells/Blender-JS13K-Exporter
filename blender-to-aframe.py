@@ -13,6 +13,9 @@ def parseNumber (val): # converts number to string, and removes trailing zeros
         text = text[0: len(text) - 1]
     return text
 
+def rgbToHex (r, g, b): # converts rgb values in the range of 0-1 to hex code
+    return '#%02x%02x%02x' % (math.floor(r * 255), math.floor(g * 255), math.floor(b * 255))
+
 groupNames = ['general']
 groupData = ['']
 
@@ -29,7 +32,7 @@ for obj in bpy.data.objects:
         # create a new group
         groupIndex = len(groupNames)
         groupNames.append(group)
-        newText = '\r\n<a-entity material="color: ' + parseNumber(obj.material_slots[0].material.diffuse_color[0]) + ' ' + parseNumber(obj.material_slots[0].material.diffuse_color[1]) + ' ' + parseNumber(obj.material_slots[0].material.diffuse_color[2]) + '"'
+        newText = '\r\n<a-entity material="color: ' + rgbToHex(obj.material_slots[0].material.diffuse_color[0], obj.material_slots[0].material.diffuse_color[1], obj.material_slots[0].material.diffuse_color[2]) + '"'
         
         # custom properties on the material:
         for customProp in obj.material_slots[0].material.keys():
