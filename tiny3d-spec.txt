@@ -1,0 +1,20 @@
+Each entity separated by '/'
+Each part separated by ','
+
+PARTS:
+
+1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere)
+    Cylinder: type segmentsRadial
+    Cone: type segmentsRadial radiusBottom radiusTop
+
+(TO DO: if radiusBottom == 1 and radiusTop == 0, then we shouldn't need to enter that here)
+
+2 = group colour i (based on materials. Convert group names to numbers) (colour, without #) (i = interact class - only need to add the first time a group appears)
+
+(TO DO: only 3 digits for colour)
+
+3 = position
+
+4 = scale (if 1 value, apply that to all 3 axis)
+
+5 = rotation (optional)
