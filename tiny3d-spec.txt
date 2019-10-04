@@ -9,9 +9,7 @@ PARTS:
 
 (TO DO: if radiusBottom == 1 and radiusTop == 0, then we shouldn't need to enter that here)
 
-2 = group colour i (based on materials. Convert group names to numbers) (colour, without #) (i = interact class - only need to add the first time a group appears)
-
-(TO DO: only 3 digits for colour)
+2 = group colour i (based on materials. Convert group names to numbers) (colour, 3 figure hex, without #) (i = interact class - only need to add the first time a group appears)
 
 3 = position
 

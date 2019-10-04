@@ -2,7 +2,7 @@
 1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere)
     Cylinder: type segmentsRadial
     Cone: type segmentsRadial radiusBottom radiusTop
-2 = group colour i (based on materials. Convert group names to numbers) (color, without #) (i = interact class - only need to add the first time a group appears)
+2 = group colour i (based on materials. Convert group names to numbers) (color, 3 figure hex, without #) (i = interact class - only need to add the first time a group appears)
 3 = position
 4 = scale (if 1 value, apply that to all 3 axis)
 5 = rotation (optional)
