@@ -88,14 +88,28 @@ for obj in bpy.data.objects:
     
     output += ',' + groupText
     
-    # position
-    output += ',' + parseNumber(obj.location.x) + ' ' + parseNumber(obj.location.z) + ' ' + parseNumber(obj.location.y)
+    # position (Blender and A-Frame x axis are inversely proportional)
+    output += ',' + parseNumber(obj.location.x * -1) + ' ' + parseNumber(obj.location.z) + ' ' + parseNumber(obj.location.y)
     
     # scale
-    if obj.scale.x == obj.scale.y and obj.scale.x == obj.scale.z: # just write a single scale value
-        output += ',' + parseNumber(obj.scale.x * 2) + ','
+    # default radiuses are 1 in A-Frame (rather than 0.5, so scale accordingly here)
+    # A-Frame then uses 2 for default height for cones and cylinders
+    if 'Cone' in obj.name or 'Cylinder' in obj.name or 'Sphere' in obj.name:
+        scaleX = obj.dimensions.x / 2
+        scaleY = obj.dimensions.y / 2
+        if 'Sphere' in obj.name:
+            scaleZ = obj.dimensions.z / 2
+        else:
+            scaleZ = obj.dimensions.z
+    else:
+        scaleX = obj.dimensions.x
+        scaleY = obj.dimensions.y
+        scaleZ = obj.dimensions.z
+        
+    if parseNumber(scaleX) == parseNumber(scaleY) and parseNumber(scaleX) == parseNumber(scaleZ): # just write a single scale value
+        output += ',' + parseNumber(scaleX)
     else: 
-        output += ',' + parseNumber(obj.scale.x * 2) + ' ' + parseNumber(obj.scale.z * 2) + ' ' + parseNumber(obj.scale.y * 2)
+        output += ',' + parseNumber(scaleX) + ' ' + parseNumber(scaleZ) + ' ' + parseNumber(scaleY)
 
     # rotation
     if obj.rotation_euler.x != 0 or obj.rotation_euler.y != 0 or obj.rotation_euler.z != 0:
