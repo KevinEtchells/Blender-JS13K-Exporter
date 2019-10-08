@@ -2,6 +2,7 @@
 1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere)
     Cylinder: type segmentsRadial
     Cone: type segmentsRadial radiusBottom radiusTop
+    Sphere: type SegmentsWidth segmentsHeight
 2 = group colour i (based on materials. Convert group names to numbers) (color, 3 figure hex, without #) (i = interact class - only need to add the first time a group appears)
 3 = position
 4 = scale (if 1 value, apply that to all 3 axis)
@@ -31,7 +32,7 @@ const tiny3D = (function () {
             geometryText += GEOMETRIES[parseInt(geometryData[0], 10)];
             el.setAttribute("geometry", geometryText);
             
-            // segmentsRadial
+            // segmentsRadial - cylinder/cone
             if (geometryData[0] === "1" || geometryData[0] === "2") {
                 geometryText += "; segmentsHeight: 1; segmentsRadial: " + geometryData[1];
             }
@@ -39,6 +40,11 @@ const tiny3D = (function () {
             // cone - radiusBottom + radiusTop
             if (geometryData[0] === "2") {
                 geometryText += "; radiusBottom: " + geometryData[2] + "; radiusTop: " + geometryData[3];
+            }
+            
+            // sphere
+            if (geometryData[0] === "4") {
+                geometryData += "; segmentsHeight: " + geometryData[1] + "; segmentsWidth: " + geometryData[2];
             }
             
             // geometry attribute is added later, so we know whether to add "buffer: false"

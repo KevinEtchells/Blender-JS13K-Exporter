@@ -5,6 +5,7 @@ import zlib
 # 1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere)
 #     Cylinder: type segmentsRadial
 #     Cone: type segmentsRadial radiusBottom radiusTop
+#     Sphere: type SegmentsWidth segmentsHeight
 # 2 = group colour i (based on materials. Convert group names to numbers) (color, 3 figure hex, without #) (i = interact class - only need to add # the first time a group appears)
 # 3 = position
 # 4 = scale (if 1 value, apply that to all 3 axis)
@@ -76,6 +77,14 @@ for obj in bpy.data.objects:
     elif 'Cylinder' in obj.name:
         output += '1 '
         output += str(len(obj.data.polygons) - 2)
+    elif 'Sphere' in obj.name:
+        output += '4 '
+        if 'segmentsWidth' not in obj.keys():
+            obj['segmentsWidth'] = 12
+        if 'segmentsHeight' not in obj.keys():
+            obj['segmentsHeight'] = 8
+        output += str(obj['segmentsWidth']) + ' '
+        output += str(obj['segmentsHeight'])
     
     output += ',' + groupText
     

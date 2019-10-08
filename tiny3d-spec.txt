@@ -6,6 +6,7 @@ PARTS:
 1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere)
     Cylinder: type segmentsRadial
     Cone: type segmentsRadial radiusBottom radiusTop
+    Sphere: type SegmentsWidth segmentsHeight
 
 (TO DO: if radiusBottom == 1 and radiusTop == 0, then we shouldn't need to enter that here)
 
