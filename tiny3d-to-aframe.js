@@ -8,13 +8,12 @@
 5 = rotation (optional)
 */
 
-const expandTiny3D = (function () {
+const tiny3D = (function () {
 
     const GEOMETRIES = ["box", "cylinder", "cone", "plane", "sphere"];
     
-    return function (data) {
+    return function (data, parentEl, callback) { // data and parentEl required, callback optional
 
-        let scene = document.querySelector("a-scene");
         let groups = []; // {id: 0, el: <a-entity>}
 
         // loop through each entity
@@ -28,8 +27,8 @@ const expandTiny3D = (function () {
 
             // 1. geometry
             let geometryText = "primitive: ";
-            geometryData = sections[0].split(" ");
-            geometryText += GEOMETRIES[parseInt(geometryData[0])];
+            let geometryData = sections[0].split(" ");
+            geometryText += GEOMETRIES[parseInt(geometryData[0], 10)];
             el.setAttribute("geometry", geometryText);
             
             // segmentsRadial
@@ -98,9 +97,16 @@ const expandTiny3D = (function () {
         
         // add each group to scene
         groups.forEach(function (group) {
-            scene.appendChild(group.el); 
+            parentEl.appendChild(group.el); 
         });
+        
+        if (callback) {
+            callback();
+        }
         
     };
     
 }());
+
+// For advanced optimisation in Closure Compiler:
+window['tiny3D'] = tiny3D;
