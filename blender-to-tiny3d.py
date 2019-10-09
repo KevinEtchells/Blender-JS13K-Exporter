@@ -2,7 +2,7 @@ import bpy
 import math
 import zlib
 
-# 1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere)
+# 1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere, 5 = dodecahedron)
 #     Cylinder: type segmentsRadial
 #     Cone: type segmentsRadial radiusBottom radiusTop
 #     Sphere: type SegmentsWidth segmentsHeight
@@ -61,11 +61,11 @@ for obj in bpy.data.objects:
         groupText = groupsRefs[groupIndex]
 
     # geometry
-    if 'Cube' in obj.name:
+    if 'cube' in obj.name.lower():
         output += '0'
-    elif 'Plane' in obj.name:
+    elif 'plane' in obj.name.lower():
         output += '3'
-    elif 'Cone' in obj.name:
+    elif 'cone' in obj.name.lower():
         output += '2 '
         output += str(len(obj.data.polygons) - 2) + ' '
         if 'radiusBottom' not in obj.keys():
@@ -74,10 +74,10 @@ for obj in bpy.data.objects:
             obj['radiusTop'] = 0
         output += str(obj['radiusBottom']) + ' '
         output += str(obj['radiusTop'])
-    elif 'Cylinder' in obj.name:
+    elif 'cylinder' in obj.name.lower():
         output += '1 '
         output += str(len(obj.data.polygons) - 2)
-    elif 'Sphere' in obj.name:
+    elif 'sphere' in obj.name.lower():
         output += '4 '
         if 'segmentsWidth' not in obj.keys():
             obj['segmentsWidth'] = 12
@@ -85,6 +85,8 @@ for obj in bpy.data.objects:
             obj['segmentsHeight'] = 8
         output += str(obj['segmentsWidth']) + ' '
         output += str(obj['segmentsHeight'])
+    elif 'dodecahedron' in obj.name.lower():
+        output += '5'
     
     output += ',' + groupText
     
@@ -94,10 +96,10 @@ for obj in bpy.data.objects:
     # scale
     # default radiuses are 1 in A-Frame (rather than 0.5, so scale accordingly here)
     # A-Frame then uses 2 for default height for cones and cylinders
-    if 'Cone' in obj.name or 'Cylinder' in obj.name or 'Sphere' in obj.name:
+    if 'cone' in obj.name.lower() or 'cylinder' in obj.name.lower() or 'sphere' in obj.name.lower() or 'dodecahedron' in obj.name.lower():
         scaleX = obj.dimensions.x / 2
         scaleY = obj.dimensions.y / 2
-        if 'Sphere' in obj.name:
+        if 'sphere' in obj.name.lower() or 'dodecahedron' in obj.name.lower():
             scaleZ = obj.dimensions.z / 2
         else:
             scaleZ = obj.dimensions.z

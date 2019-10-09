@@ -1,5 +1,5 @@
 /*
-1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere)
+1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere, 5 = dodecahedron)
     Cylinder: type segmentsRadial
     Cone: type segmentsRadial radiusBottom radiusTop
     Sphere: type SegmentsWidth segmentsHeight
@@ -11,7 +11,7 @@
 
 const tiny3D = (function () {
 
-    const GEOMETRIES = ["box", "cylinder", "cone", "plane", "sphere"];
+    const GEOMETRIES = ["box", "cylinder", "cone", "plane", "sphere", "dodecahedron"];
     
     return function (data, parentEl, callback) { // data and parentEl required, callback optional
 
