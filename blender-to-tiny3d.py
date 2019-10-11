@@ -124,7 +124,7 @@ for obj in bpy.data.objects:
     if 'plane' in obj.name.lower(): # As default rotation for planes is different between A-Frame and Blender
         rotationX -= math.pi / 2
     if rotationX != 0 or rotationY != 0 or rotationZ != 0:
-        output += ',' + parseNumber(radToDeg(rotationX)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.z)) + ' ' + parseNumber(radToDeg(rotationZ))
+        output += ',' + parseNumber(radToDeg(rotationX)) + ' ' + parseNumber(radToDeg(rotationZ)) + ' ' + parseNumber(radToDeg(rotationY))
 
 # print output
 print(output)
