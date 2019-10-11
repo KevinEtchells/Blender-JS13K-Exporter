@@ -103,6 +103,10 @@ for obj in bpy.data.objects:
             scaleZ = obj.dimensions.z / 2
         else:
             scaleZ = obj.dimensions.z
+    elif 'plane' in obj.name.lower(): # A-Frame planes use X and Y axis for scale
+        scaleX = obj.dimensions.x
+        scaleY = obj.dimensions.z
+        scaleZ = 1
     else:
         scaleX = obj.dimensions.x
         scaleY = obj.dimensions.y
@@ -114,8 +118,13 @@ for obj in bpy.data.objects:
         output += ',' + parseNumber(scaleX) + ' ' + parseNumber(scaleZ) + ' ' + parseNumber(scaleY)
 
     # rotation
-    if obj.rotation_euler.x != 0 or obj.rotation_euler.y != 0 or obj.rotation_euler.z != 0:
-        output += ',' + parseNumber(radToDeg(obj.rotation_euler.x)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.z)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.y))
+    rotationX = obj.rotation_euler.x
+    rotationY = obj.rotation_euler.y
+    rotationZ = obj.rotation_euler.z
+    if 'plane' in obj.name.lower(): # As default rotation for planes is different between A-Frame and Blender
+        rotationX -= math.pi / 2
+    if rotationX != 0 or rotationY != 0 or rotationZ != 0:
+        output += ',' + parseNumber(radToDeg(rotationX)) + ' ' + parseNumber(radToDeg(obj.rotation_euler.z)) + ' ' + parseNumber(radToDeg(rotationZ))
 
 # print output
 print(output)
