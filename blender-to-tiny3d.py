@@ -103,10 +103,10 @@ for obj in bpy.data.objects:
             scaleZ = obj.dimensions.z / 2
         else:
             scaleZ = obj.dimensions.z
-    elif 'plane' in obj.name.lower(): # A-Frame planes use X and Y axis for scale
+    elif 'plane' in obj.name.lower(): # A-Frame planes use X and Y axis for scale, so this allows for this axis swap later on
         scaleX = obj.dimensions.x
-        scaleY = obj.dimensions.z
-        scaleZ = 1
+        scaleY = 1
+        scaleZ = obj.dimensions.y
     else:
         scaleX = obj.dimensions.x
         scaleY = obj.dimensions.y
