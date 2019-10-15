@@ -15,3 +15,6 @@ PARTS:
 4 = scale (if 1 value, apply that to all 3 axis)
 
 5 = rotation (optional)
+
+6 = modifiers (optional)
+    m20 = mirror + mirrorObjectIndex

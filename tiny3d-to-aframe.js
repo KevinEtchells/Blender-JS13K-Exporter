@@ -1,14 +1,3 @@
-/*
-1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere, 5 = dodecahedron)
-    Cylinder: type segmentsRadial
-    Cone: type segmentsRadial radiusBottom radiusTop
-    Sphere: type SegmentsWidth segmentsHeight
-2 = group colour i (based on materials. Convert group names to numbers) (color, 3 figure hex, without #) (i = interact class - only need to add the first time a group appears)
-3 = position
-4 = scale (if 1 value, apply that to all 3 axis)
-5 = rotation (optional)
-*/
-
 const tiny3D = (function () {
 
     const GEOMETRIES = ["box", "cylinder", "cone", "plane", "sphere", "dodecahedron"];
@@ -18,10 +7,11 @@ const tiny3D = (function () {
         let groups = []; // {id: 0, el: <a-entity>}
 
         // loop through each entity
-        data.split("/").forEach(function (entity) {
+        let entities = data.split("/");
+        for (let entityIndex = 0; entityIndex < entities.length; entityIndex++) { // for loop rather than forEach as we add new entities when processing modifiers
 
             // split entity into each component
-            let sections = entity.split(",");
+            let sections = entities[entityIndex].split(",");
 
             let el = document.createElement("a-entity");
 
@@ -64,8 +54,34 @@ const tiny3D = (function () {
             
             
             // 5. rotation
-            if (sections.length >= 5) {
+            if (sections.length >= 5 && sections[4]) {
                 el.setAttribute("rotation", sections[4]);
+            }
+            
+            
+            // 6. modifiers
+            if (sections.length >= 6) {
+                if (sections[5].indexOf("m") === 0) { // mirror modifier
+                    let mirrorObjectIndex = parseInt(sections[5].replace("m", ""));
+                    let mirrorPosition = entities[mirrorObjectIndex].split(",")[2];
+                    let mirrorX = parseFloat(mirrorPosition.split(" ")[0]);
+                    let objectPosition = sections[2];
+                    let objectX = parseFloat(objectPosition.split(" ")[0]);
+                    let difference = objectX - mirrorX;
+                    let newEntity = "";
+                    sections.forEach(function (section, sectionIndex) {
+                        if (sectionIndex !== 0) {
+                            newEntity += ",";
+                        }
+                        if (sectionIndex === 2) {
+                            // TO DO: + or - difference may depend on if objectX is > or < mirrorX
+                            newEntity += objectPosition.replace(/-?[0-9]*/, objectX - (difference * 2) );
+                        } else if (sectionIndex !== 5) { // we want to add all sections back in except for modifiers
+                            newEntity += sections[sectionIndex];
+                        }
+                    });
+                    entities.push(newEntity);
+                }
             }
             
 
@@ -99,7 +115,7 @@ const tiny3D = (function () {
             // set this last, as "buffer: false" is only added at the group stage
             el.setAttribute("geometry", geometryText);
             
-        });
+        }
         
         // add each group to scene
         groups.forEach(function (group) {

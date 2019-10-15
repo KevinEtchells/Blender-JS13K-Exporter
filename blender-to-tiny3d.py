@@ -2,15 +2,6 @@ import bpy
 import math
 import zlib
 
-# 1 = type: (0 = box, 1 = cylinder, 2 = cone, 3 = plane, 4 = sphere, 5 = dodecahedron)
-#     Cylinder: type segmentsRadial
-#     Cone: type segmentsRadial radiusBottom radiusTop
-#     Sphere: type SegmentsWidth segmentsHeight
-# 2 = group colour i (based on materials. Convert group names to numbers) (color, 3 figure hex, without #) (i = interact class - only need to add # the first time a group appears)
-# 3 = position
-# 4 = scale (if 1 value, apply that to all 3 axis)
-# 5 = rotation (optional)
-
 def radToDeg (val):
     return (val * 180) / math.pi
 
@@ -94,23 +85,25 @@ for obj in bpy.data.objects:
     output += ',' + parseNumber(obj.location.x * -1) + ' ' + parseNumber(obj.location.z) + ' ' + parseNumber(obj.location.y)
     
     # scale
-    # default radiuses are 1 in A-Frame (rather than 0.5, so scale accordingly here)
-    # A-Frame then uses 2 for default height for cones and cylinders
+    # use scale rather than dimensions (as dimensions also includes modifiers)
+    # Blender default dimensions are 2 (compared with 1 for A-Frame)
     if 'cone' in obj.name.lower() or 'cylinder' in obj.name.lower() or 'sphere' in obj.name.lower() or 'dodecahedron' in obj.name.lower():
-        scaleX = obj.dimensions.x / 2
-        scaleY = obj.dimensions.y / 2
+        # default radiuses are 1 in A-Frame (rather than 0.5, so scale accordingly here)
+        # A-Frame then uses 2 for default height for cones and cylinders
+        scaleX = obj.scale.x
+        scaleY = obj.scale.y
         if 'sphere' in obj.name.lower() or 'dodecahedron' in obj.name.lower():
-            scaleZ = obj.dimensions.z / 2
+            scaleZ = obj.scale.z
         else:
-            scaleZ = obj.dimensions.z
+            scaleZ = obj.scale.z * 2
     elif 'plane' in obj.name.lower(): # A-Frame planes use X and Y axis for scale, so this allows for this axis swap later on
-        scaleX = obj.dimensions.x
+        scaleX = obj.scale.x * 2
         scaleY = 1
-        scaleZ = obj.dimensions.y
+        scaleZ = obj.scale.y * 2
     else:
-        scaleX = obj.dimensions.x
-        scaleY = obj.dimensions.y
-        scaleZ = obj.dimensions.z
+        scaleX = obj.scale.x * 2
+        scaleY = obj.scale.y * 2
+        scaleZ = obj.scale.z * 2
         
     if parseNumber(scaleX) == parseNumber(scaleY) and parseNumber(scaleX) == parseNumber(scaleZ): # just write a single scale value
         output += ',' + parseNumber(scaleX)
@@ -125,6 +118,20 @@ for obj in bpy.data.objects:
         rotationX -= math.pi / 2
     if rotationX != 0 or rotationY != 0 or rotationZ != 0:
         output += ',' + parseNumber(radToDeg(rotationX)) + ' ' + parseNumber(radToDeg(rotationZ)) + ' ' + parseNumber(radToDeg(rotationY))
+    elif len(obj.modifiers): # add a comma, to indicate blank section, as there is a modifier section to add
+        output += ','
+        
+    # apply modifiers
+    for modifier in obj.modifiers:
+        if modifier.name == 'Array':
+            print('Array modifier - not currently implemented')
+        elif modifier.name == 'Mirror':
+            # get index of Mirror Object
+            for i in range(len(bpy.data.objects)):
+                if bpy.data.objects[i].name == modifier.mirror_object.name:
+                    output += ',m' + str(i)
+            
+            # TO DO: check axis using e.g. modifier.use_axis[0] for x-axis
 
 # print output
 print(output)
